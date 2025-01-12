@@ -1,6 +1,6 @@
 import requests
 
-API_KEY = "84822b92"  # Replace with your OMDb API key
+API_KEY = "mypassword"  # Replace with your OMDb API key
 BASE_URL = "http://www.omdbapi.com/"
 
 def fetch_movie_by_title(title):

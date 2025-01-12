@@ -1,0 +1,6 @@
+# Pytho
+__pycache__/
+
+# Secret keys
+.env
+

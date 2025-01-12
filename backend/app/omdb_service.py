@@ -1,6 +1,11 @@
+from dotenv import load_dotenv
 import requests
+import os
 
-API_KEY = "mypassword"  # Replace with your OMDb API key
+# Load environment variables from .env file
+load_dotenv()
+
+API_KEY = os.getenv("API_KEY")  # Replace with your OMDb API key
 BASE_URL = "http://www.omdbapi.com/"
 
 def fetch_movie_by_title(title):

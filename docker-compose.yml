@@ -14,7 +14,6 @@ services:
       - DB_NAME=mydatabase
       - DB_USER=root
       - DB_PASSWORD=6521
-    # If you have volumes to persist data, they'd go here
     volumes:
       - ./backend:/app
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000
@@ -32,3 +31,4 @@ services:
 
 volumes:
   db_data:
+

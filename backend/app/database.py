@@ -1,35 +1,23 @@
-import os
-import mysql.connector
+# database.py
 
-# Read environment variables for DB config
+from dotenv import load_dotenv
+import os
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
+
+#Load .env if it's not already loaded
+load_dotenv()
+
 DB_HOST = os.getenv("DB_HOST", "localhost")
-DB_NAME = os.getenv("DB_NAME", "mydatabase")
+DB_NAME = os.getenv("DB_NAME" , "mydatabase")
 DB_USER = os.getenv("DB_USER", "root")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "secret")
 
+DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
 
-def get_db_connection():
-    """Create and return a new MySQL connection."""
-    return mysql.connector.connect(
-        host=DB_HOST,
-        user=DB_USER,
-        password=DB_PASSWORD,
-        database=DB_NAME
-    )
+engine = create_engine(DATABASE_URL, echo= False)
 
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-def create_table_if_not_exists():
-    """
-    Create a simple table for demonstration (if it doesn't already exist).
-    """
-    connection = get_db_connection()
-    cursor = connection.cursor()
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS demo_table (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            name VARCHAR(100) NOT NULL
-        );
-    """)
-    connection.commit()
-    cursor.close()
-    connection.close()
+Base = declarative_base()

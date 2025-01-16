@@ -2,23 +2,26 @@
 
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
-from passlib.context import CryptContext
+from pydantic import BaseModel
 
-from app.database import Base, engine, SessionLocal
-from app.models import RegisteredUser
-from app.omdb_service import fetch_movie_by_title
+from app.database import SessionLocal
+from app.services.user_service import register_user, fetch_registered_users, login_user
+from app.services.omdb_service import fetch_movie_by_title
+
 
 app = FastAPI()
 
-# Password hashing utility
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Pydantic model for Login
+class UserLogin(BaseModel):
+    username: str
+    password: str
 
-# 1. Create tables on startup
-@app.on_event("startup")
-def on_startup():
-    Base.metadata.create_all(bind=engine)
+# Pydantic model for request body
+class UserRegistration(BaseModel):
+    username: str
+    password: str
 
-# 2. Dependency to get a DB session
+# Dependency to get a DB session
 def get_db():
     db = SessionLocal()
     try:
@@ -26,44 +29,35 @@ def get_db():
     finally:
         db.close()
 
-@app.get("/")
-def read_root():
-    return {"message": "Hello from FastAPI"}
+@app.on_event("startup")
+def on_startup():
+    from app.database import Base, engine
+    Base.metadata.create_all(bind=engine)
 
-# 3. Register a user (new endpoint)
+@app.post("/")
+def login_endpoint(credentials: UserLogin, db: Session = Depends(get_db)):
+    """
+    Logs a user in if their username and password match a record in the DB.
+    Returns success if valid, raises HTTPException if invalid.
+    """
+    return login_user(credentials.username, credentials.password, db)
+
+
 @app.post("/register")
-def register_user(username: str, password: str, db: Session = Depends(get_db)):
+def register_user_endpoint(user: UserRegistration, db: Session = Depends(get_db)):
     """
-    Register a new user with a username and password.
-    Passwords are hashed before being stored.
+    This route function delegates user registration to user_service.
     """
-    # Check if the username already exists
-    existing_user = db.query(RegisteredUser).filter(RegisteredUser.username == username).first()
-    if existing_user:
-        raise HTTPException(status_code=400, detail="Username already taken")
+    return register_user(user.username, user.password, db)
 
-    # Hash the password before storing it
-    hashed_password = pwd_context.hash(password)
 
-    # Create and store the user
-    new_user = RegisteredUser(username=username, hashed_password=hashed_password)
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-
-    return {"id": new_user.id, "username": new_user.username}
-
-# 4. Fetch all registered users (renamed from /users for clarity)
+# Fetch all registered users
 @app.get("/registered-users")
-def fetch_registered_users(db: Session = Depends(get_db)):
-    """
-    Fetch all registered users (excluding their passwords).
-    """
-    users = db.query(RegisteredUser).all()
-    return [{"id": user.id, "username": user.username} for user in users]
+def get_registered_users(db: Session = Depends(get_db)):
+    return fetch_registered_users(db)
 
-# 5. Example OMDb endpoint
+# Movie endpoint
 @app.get("/movies/{title}")
 def get_movie(title: str):
-    movie_data = fetch_movie_by_title(title)
-    return movie_data
+    return fetch_movie_by_title(title)
+

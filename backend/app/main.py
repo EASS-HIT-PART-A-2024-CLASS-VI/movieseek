@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 
 from app.database import Base, engine, SessionLocal
-from app.models import DemoUser
+from app.models import RegisteredUser
 from app.omdb_service import fetch_movie_by_title
 
 app = FastAPI()
@@ -38,7 +38,7 @@ def register_user(username: str, password: str, db: Session = Depends(get_db)):
     Passwords are hashed before being stored.
     """
     # Check if the username already exists
-    existing_user = db.query(DemoUser).filter(DemoUser.username == username).first()
+    existing_user = db.query(RegisteredUser).filter(RegisteredUser.username == username).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="Username already taken")
 
@@ -46,7 +46,7 @@ def register_user(username: str, password: str, db: Session = Depends(get_db)):
     hashed_password = pwd_context.hash(password)
 
     # Create and store the user
-    new_user = DemoUser(username=username, hashed_password=hashed_password)
+    new_user = RegisteredUser(username=username, hashed_password=hashed_password)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
@@ -59,7 +59,7 @@ def fetch_registered_users(db: Session = Depends(get_db)):
     """
     Fetch all registered users (excluding their passwords).
     """
-    users = db.query(DemoUser).all()
+    users = db.query(RegisteredUser).all()
     return [{"id": user.id, "username": user.username} for user in users]
 
 # 5. Example OMDb endpoint

@@ -10,10 +10,10 @@ services:
     depends_on:
       - db
     environment:
-      - DB_HOST=db
-      - DB_NAME=mydatabase
-      - DB_USER=root
-      - DB_PASSWORD=6521
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
     volumes:
       - ./backend:/app
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000
@@ -22,8 +22,8 @@ services:
     image: mysql:8.0
     container_name: mysql_container
     environment:
-      - MYSQL_ROOT_PASSWORD=6521
-      - MYSQL_DATABASE=mydatabase
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${DB_NAME}
     ports:
       - "3306:3306"
     volumes:

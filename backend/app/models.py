@@ -3,8 +3,8 @@
 from sqlalchemy import Column, Integer, String
 from app.database import Base
 
-class DemoUser(Base):
-    __tablename__ = "demo_user"
+class RegisteredUser(Base):
+    __tablename__ = "registered_users"
 
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String(100), unique=True, nullable=False)  # Unique usernames

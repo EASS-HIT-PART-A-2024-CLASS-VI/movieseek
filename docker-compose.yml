@@ -14,6 +14,8 @@ services:
     volumes:
       - ./backend:/app
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    networks:
+      - app-network
 
   db:
     image: mysql:8.0
@@ -25,9 +27,31 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./frontend  # Assuming frontend is in the 'frontend' directory
+    image: my-react-app:latest
+    container_name: react_frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app  # Mount local directory to container for development
+    command: npm start
+    networks:
+      - app-network
+    depends_on:
+      - api  # Ensure frontend waits for backend to be ready
 
 volumes:
   db_data:
+
+networks:
+  app-network:
+    driver: bridge
+
 
 
 

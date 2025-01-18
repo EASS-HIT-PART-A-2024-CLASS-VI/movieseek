@@ -1,5 +1,7 @@
 # MovieSeek 🎬
 
+![MovieSeekLogo](./MovieSeekLogo.png)
+
 MovieSeek is a dynamic and user-friendly web application designed for movie enthusiasts. It provides a seamless platform for users to discover movies, create an account, and save their favorite titles for future reference. 
 
 ## Key Features

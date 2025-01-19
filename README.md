@@ -12,11 +12,12 @@ MovieSeek is a dynamic and user-friendly web application designed for movie enth
 ## Technology Stack
 MovieSeek is built with modern technologies to ensure performance, scalability, and ease of development:
 - **Backend:** Powered by [FastAPI](https://fastapi.tiangolo.com/), a high-performance Python framework for building APIs.
+- **Frontend:** [React](https://reactjs.org/) for building a dynamic and responsive user interface.
 - **Database:** Uses MySQL to store user data and movie information efficiently.
 - **Containerization:** Employs Docker to create a robust and portable development environment, simplifying deployment and ensuring consistency across different systems.
 
 ## Project Structure 🌳
-
+```
 movieseek/
 ├── backend/                 # FastAPI backend
 │   ├── app/
@@ -29,3 +30,7 @@ movieseek/
 ├── README.md                # Project README file
 ├── docker-compose.yml       # Docker Compose configuration
 └── ...
+```
+
+
+

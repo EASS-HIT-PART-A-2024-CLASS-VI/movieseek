@@ -25,6 +25,10 @@ services:
       - db
     volumes:
       - ./backend:/app
+    environment:
+      - PYTHONPATH=/app  # Add this to set the root for module imports
+    env_file:
+      - .env  # Add this line to load environment variables
     command: pytest
     networks:
       - app-network

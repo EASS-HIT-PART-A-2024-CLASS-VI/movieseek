@@ -17,6 +17,18 @@ services:
     networks:
       - app-network
 
+  pytest:
+    build: ./backend
+    image: my-fastapi-app:latest
+    container_name: pytest_container
+    depends_on:
+      - db
+    volumes:
+      - ./backend:/app
+    command: pytest
+    networks:
+      - app-network
+
   db:
     image: mysql:8.0
     container_name: mysql_container
@@ -51,7 +63,3 @@ volumes:
 networks:
   app-network:
     driver: bridge
-
-
-
-

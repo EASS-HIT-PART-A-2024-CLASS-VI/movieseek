@@ -25,7 +25,8 @@ To configure the necessary environment variables for the project, follow these s
    cp .env.example .env
    ```
 3. Open the newly created `.env` file and replace the placeholder values with your actual configuration details. For example:
-```API_KEY=your_actual_api_key
+```
+API_KEY=your_actual_api_key
 DB_HOST=your_database_host
 DB_NAME=your_database_name
 DB_USER=your_database_user

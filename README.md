@@ -16,6 +16,24 @@ MovieSeek is built with modern technologies to ensure performance, scalability, 
 - **Database:** Uses MySQL to store user data and movie information efficiently.
 - **Containerization:** Employs Docker to create a robust and portable development environment, simplifying deployment and ensuring consistency across different systems.
 
+## Environment Setup 🌱
+To configure the necessary environment variables for the project, follow these steps:
+
+1. Locate the `.env.example` file in the project root directory.
+2. Create a copy of the `.env.example` file and rename it to `.env`:
+   ```bash
+   cp .env.example .env
+   ```
+3. Open the newly created `.env` file and replace the placeholder values with your actual configuration details. For example:
+```API_KEY=your_actual_api_key
+DB_HOST=your_database_host
+DB_NAME=your_database_name
+DB_USER=your_database_user
+DB_PASSWORD=your_database_password
+MYSQL_ROOT_PASSWORD=your_root_password
+```
+4. Save the .env file. The project will now use these environment variables during execution.
+
 ## Project Structure 🌳
 ```
 movieseek/
@@ -27,8 +45,11 @@ movieseek/
 │   ├── requirements.txt     # Python dependencies
 │   └── ...
 ├── frontend/                # React frontend (contents hidden)
+├── .env                     # Environment variables
+├── .env.example             # Example environment variables
 ├── README.md                # Project README file
 ├── docker-compose.yml       # Docker Compose configuration
+├── .gitignore               # Ignore file for telling the git what files to ignore from publishing
 └── ...
 ```
 

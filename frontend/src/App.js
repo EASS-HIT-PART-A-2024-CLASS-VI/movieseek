@@ -1,6 +1,6 @@
 // src/App.js
 import React from 'react';
-import Login from './components/Login';  // Import the Login component
+import Login from './pages/Login';  // Import the Login page
 
 function App() {
   return (

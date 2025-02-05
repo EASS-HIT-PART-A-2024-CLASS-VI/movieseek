@@ -48,18 +48,20 @@ services:
 
   frontend:
     build:
-      context: ./frontend  # Assuming frontend is in the 'frontend' directory
+      context: ./frontend
     image: my-react-app:latest
     container_name: react_frontend
     ports:
       - "3000:3000"
     volumes:
-      - ./frontend:/app  # Mount local directory to container for development
+      - ./frontend:/app  # Mount local directory to container for live updates
+      - /app/node_modules  # Prevents conflicts between local and container dependencies
     command: npm start
     networks:
       - app-network
     depends_on:
-      - api  # Ensure frontend waits for backend to be ready
+      - api
+
 
 volumes:
   db_data:

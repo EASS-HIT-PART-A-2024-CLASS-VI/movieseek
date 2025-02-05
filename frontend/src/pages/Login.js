@@ -1,17 +1,36 @@
 import React, { useState } from "react";
-import InputField from "../components/InputField";
 
 const Login = () => {
   const [userData, setUserData] = useState({ username: "", password: "" });
+  const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Logging in with:", userData);
-    // Here you'd call an API or handle authentication logic
+
+    try {
+      const response = await fetch("http://localhost:8000/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail);
+      }
+
+      const data = await response.json();
+      setMessage(data.message); // Show success message
+
+      // Redirect to another page after login (if needed)
+      // window.location.href = "/dashboard";
+    } catch (error) {
+      setMessage(error.message); // Show error message
+    }
   };
 
   return (
@@ -20,42 +39,66 @@ const Login = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        height: "100vh",
-        flexDirection: "column", // Aligns items in a column layout
+        height: "100vh", // Full viewport height for centering
+        flexDirection: "column",
       }}
     >
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit} style={{ textAlign: "center" }}>
-        <InputField
-          type="text"
-          name="username"
-          placeholder="Username"
-          value={userData.username}
-          onChange={handleChange}
-        />
-        <InputField
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={userData.password}
-          onChange={handleChange}
-        />
-        <button
-          type="submit"
-          style={{
-            marginTop: "10px",
-            padding: "10px 15px",
-            cursor: "pointer",
-            border: "none",
-            backgroundColor: "#007bff",
-            color: "white",
-            borderRadius: "5px",
-            fontSize: "16px",
-          }}
-        >
-          Login
-        </button>
-      </form>
+      <div
+        style={{
+          width: "300px",
+          textAlign: "center",
+        }}
+      >
+        <h2>Login</h2>
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+          <input
+            type="text"
+            name="username"
+            placeholder="Username"
+            value={userData.username}
+            onChange={handleChange}
+            style={{
+              width: "100%",
+              padding: "10px",
+              marginBottom: "10px",
+              border: "1px solid #ccc",
+              borderRadius: "5px",
+              fontSize: "16px",
+            }}
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={userData.password}
+            onChange={handleChange}
+            style={{
+              width: "100%",
+              padding: "10px",
+              marginBottom: "15px",
+              border: "1px solid #ccc",
+              borderRadius: "5px",
+              fontSize: "16px",
+            }}
+          />
+          <button
+            type="submit"
+            style={{
+              width: "100%",
+              padding: "10px",
+              backgroundColor: "#007bff",
+              color: "white",
+              border: "none",
+              borderRadius: "5px",
+              fontSize: "16px",
+              cursor: "pointer",
+            }}
+          >
+            Login
+          </button>
+        </form>
+        {message && <p style={{ marginTop: "10px", color: "red" }}>{message}</p>}
+      </div>
     </div>
   );
 };

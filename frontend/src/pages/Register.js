@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Login = () => {
+const Register = () => {
   const [userData, setUserData] = useState({ username: "", password: "" });
   const [message, setMessage] = useState("");
 
@@ -12,7 +12,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:8000/", {
+      const response = await fetch("http://localhost:8000/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userData),
@@ -23,9 +23,10 @@ const Login = () => {
         throw new Error(errorData.detail);
       }
 
-      setMessage("Login successful!");
-      // Redirect to another page after login (e.g., a dashboard)
-      // window.location.href = "/dashboard";
+      setMessage("Registration successful! Redirecting to login...");
+      setTimeout(() => {
+        window.location.href = "/"; // Redirect to login page
+      }, 2000);
     } catch (error) {
       setMessage(error.message);
     }
@@ -47,7 +48,7 @@ const Login = () => {
           textAlign: "center",
         }}
       >
-        <h2>Login</h2>
+        <h2>Register</h2>
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
           <input
             type="text"
@@ -55,7 +56,6 @@ const Login = () => {
             placeholder="Username"
             value={userData.username}
             onChange={handleChange}
-            required
             style={{
               width: "100%",
               padding: "10px",
@@ -71,7 +71,6 @@ const Login = () => {
             placeholder="Password"
             value={userData.password}
             onChange={handleChange}
-            required
             style={{
               width: "100%",
               padding: "10px",
@@ -86,7 +85,7 @@ const Login = () => {
             style={{
               width: "100%",
               padding: "10px",
-              backgroundColor: "#007bff", // Blue color for login button
+              backgroundColor: "#28a745", // Green color for register button
               color: "white",
               border: "none",
               borderRadius: "5px",
@@ -94,16 +93,16 @@ const Login = () => {
               cursor: "pointer",
             }}
           >
-            Login
+            Register
           </button>
         </form>
         {message && <p style={{ marginTop: "10px", color: message.includes("successful") ? "green" : "red" }}>{message}</p>}
         <p style={{ marginTop: "10px" }}>
-          Don't have an account? <a href="/register">Register here</a>
+          Already have an account? <a href="/">Login here</a>
         </p>
       </div>
     </div>
   );
 };
 
-export default Login;
+export default Register;

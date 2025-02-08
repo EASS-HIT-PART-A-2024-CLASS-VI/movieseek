@@ -1,16 +1,18 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import navigation hook
 
 const Login = () => {
   const [userData, setUserData] = useState({ username: "", password: "" });
   const [message, setMessage] = useState("");
+  const navigate = useNavigate(); // Initialize navigation
 
+  // Handle input changes
   const handleChange = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const response = await fetch("http://localhost:8000/", {
         method: "POST",
@@ -24,8 +26,9 @@ const Login = () => {
       }
 
       setMessage("Login successful!");
-      // Redirect to another page after login (e.g., a dashboard)
-      // window.location.href = "/dashboard";
+      setTimeout(() => {
+        navigate("/home"); // Redirect to home page
+      }, 1000);
     } catch (error) {
       setMessage(error.message);
     }
@@ -37,16 +40,11 @@ const Login = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        height: "100vh", // Full viewport height for centering
+        height: "100vh",
         flexDirection: "column",
       }}
     >
-      <div
-        style={{
-          width: "300px",
-          textAlign: "center",
-        }}
-      >
+      <div style={{ width: "300px", textAlign: "center" }}>
         <h2>Login</h2>
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
           <input
@@ -86,7 +84,7 @@ const Login = () => {
             style={{
               width: "100%",
               padding: "10px",
-              backgroundColor: "#007bff", // Blue color for login button
+              backgroundColor: "#007bff",
               color: "white",
               border: "none",
               borderRadius: "5px",

@@ -1,11 +1,22 @@
-# user_service.py
-
-from fastapi import HTTPException
+import jwt
+import datetime
+from fastapi import HTTPException, Response
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 from app.models import RegisteredUser
 
+# Secret key for signing JWT tokens (CHANGE THIS in production)
+SECRET_KEY = "your_secret_key"
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def create_jwt_token(data: dict, expires_delta: int = 60):
+    """
+    Creates a JWT token with an expiration time.
+    """
+    expire = datetime.datetime.utcnow() + datetime.timedelta(minutes=expires_delta)
+    data.update({"exp": expire})
+    return jwt.encode(data, SECRET_KEY, algorithm="HS256")
 
 def register_user(username: str, password: str, db: Session):
     """
@@ -24,18 +35,28 @@ def register_user(username: str, password: str, db: Session):
 
     return {"id": new_user.id, "username": new_user.username}
 
-def login_user(username: str, password: str, db: Session):
+def login_user(username: str, password: str, db: Session, response: Response):
     """
-    Validate if a user's username and password match the database record.
+    Validates user login and sets a JWT token in an HttpOnly cookie.
     """
     user = db.query(RegisteredUser).filter(RegisteredUser.username == username).first()
     if not user:
-        # 400 or 404 would both make sense; 404 (Not Found) might be more semantically correct
         raise HTTPException(status_code=404, detail="User does not exist.")
 
-    # Verify hashed password
     if not pwd_context.verify(password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Incorrect password.")
+
+    # Generate JWT token
+    token = create_jwt_token({"username": user.username})
+
+    # Set JWT token in an HttpOnly cookie
+    response.set_cookie(
+        key="access_token",
+        value=token,
+        httponly=True,  # Prevents JavaScript access
+        samesite="Lax",  # Helps with CSRF protection
+        secure=False  # Set to True in production (requires HTTPS)
+    )
 
     return {"message": "Login successful"}
 

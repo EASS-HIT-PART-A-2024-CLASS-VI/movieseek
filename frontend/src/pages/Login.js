@@ -18,6 +18,7 @@ const Login = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userData),
+        credentials: "include", // Allow browser to store the JWT in HttpOnly cookies
       });
 
       if (!response.ok) {

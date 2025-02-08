@@ -7,3 +7,4 @@ pymysql
 cryptography
 passlib
 pytest
+pyjwt

@@ -1,20 +1,41 @@
 from fastapi import FastAPI, Depends, HTTPException, Request, Response
 from sqlalchemy.orm import Session
 import jwt
+import requests
+from contextlib import asynccontextmanager
 
 from app.middlewares import add_cors_middleware
 from app.schemas import UserLogin, UserRegistration
 from app.dependencies import get_db
 from app.services.user_service import register_user, fetch_registered_users, login_user
-from app.services.omdb_service import fetch_movie_by_title
+from app.database import Base, engine
 
-app = FastAPI()
+# OMDB Microservice URL
+OMDB_SERVICE_URL = "http://omdb_service:8001/search"
+
+# Secret key (must match the one in `user_service.py`)
+SECRET_KEY = "your_secret_key"
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Lifespan event handler for startup and shutdown.
+    """
+    print("🚀 Starting up: Initializing Database")
+    Base.metadata.create_all(bind=engine)  # Ensure DB tables exist
+
+    yield  # Wait here until shutdown
+
+    print("🛑 Shutting down: Cleaning up resources")  # Optional cleanup step
+
+
+# Initialize FastAPI app with lifespan
+app = FastAPI(lifespan=lifespan)
 
 # Apply CORS middleware
 add_cors_middleware(app)
 
-# Secret key (must match the one in `user_service.py`)
-SECRET_KEY = "your_secret_key"
 
 def verify_token(request: Request):
     """
@@ -23,7 +44,7 @@ def verify_token(request: Request):
     token = request.cookies.get("access_token")  # Get JWT token from cookie
     if not token:
         raise HTTPException(status_code=401, detail="Not authenticated")
-    
+
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         return payload  # Token is valid, return user data
@@ -32,12 +53,14 @@ def verify_token(request: Request):
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Invalid token")
 
+
 @app.post("/")
 def login_endpoint(credentials: UserLogin, response: Response, db: Session = Depends(get_db)):
     """
     Logs a user in and stores the JWT token in an HttpOnly cookie.
     """
     return login_user(credentials.username, credentials.password, db, response)
+
 
 @app.post("/register")
 def register_user_endpoint(user: UserRegistration, db: Session = Depends(get_db)):
@@ -46,6 +69,7 @@ def register_user_endpoint(user: UserRegistration, db: Session = Depends(get_db)
     """
     return register_user(user.username, user.password, db)
 
+
 @app.get("/registered-users")
 def get_registered_users(db: Session = Depends(get_db)):
     """
@@ -53,12 +77,18 @@ def get_registered_users(db: Session = Depends(get_db)):
     """
     return fetch_registered_users(db)
 
+
 @app.get("/movies/{title}")
 def get_movie(title: str):
     """
-    Fetches movie details from the OMDB API.
+    Fetches movie details from the OMDB Microservice.
     """
-    return fetch_movie_by_title(title)
+    response = requests.get(OMDB_SERVICE_URL, params={"title": title})  # Use "title" instead of "query"
+
+    if response.status_code == 200:
+        return response.json()
+    raise HTTPException(status_code=response.status_code, detail="Error fetching movie details")
+
 
 @app.get("/protected")
 def protected_route(user: dict = Depends(verify_token)):
@@ -67,6 +97,7 @@ def protected_route(user: dict = Depends(verify_token)):
     """
     return {"message": f"Hello, {user['username']}! You are authenticated."}
 
+
 @app.post("/logout")
 def logout(response: Response):
     """
@@ -74,11 +105,3 @@ def logout(response: Response):
     """
     response.delete_cookie("access_token")
     return {"message": "Logged out successfully"}
-
-@app.on_event("startup")
-def on_startup():
-    """
-    Initializes the database tables on application startup.
-    """
-    from app.database import Base, engine
-    Base.metadata.create_all(bind=engine)

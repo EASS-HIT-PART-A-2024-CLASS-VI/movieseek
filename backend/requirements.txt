@@ -5,6 +5,9 @@ python-dotenv
 sqlalchemy
 pymysql
 cryptography
-passlib
+bcrypt
 pytest
+pytest-asyncio
+httpx
 pyjwt
+

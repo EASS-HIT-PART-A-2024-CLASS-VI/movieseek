@@ -1,33 +1,41 @@
+import bcrypt
 import jwt
-import datetime
+from datetime import datetime, timezone, timedelta
 from fastapi import HTTPException, Response
 from sqlalchemy.orm import Session
-from passlib.context import CryptContext
 from app.models import RegisteredUser
 
-# Secret key for signing JWT tokens (CHANGE THIS in production)
 SECRET_KEY = "your_secret_key"
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+def hash_password(password: str) -> str:
+    """
+    Hashes a password using bcrypt.
+    """
+    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """
+    Verifies a password against a bcrypt hash.
+    """
+    return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
 
 def create_jwt_token(data: dict, expires_delta: int = 60):
     """
     Creates a JWT token with an expiration time.
     """
-    expire = datetime.datetime.utcnow() + datetime.timedelta(minutes=expires_delta)
+    expire = datetime.now(timezone.utc) + timedelta(minutes=expires_delta)
     data.update({"exp": expire})
     return jwt.encode(data, SECRET_KEY, algorithm="HS256")
 
 def register_user(username: str, password: str, db: Session):
     """
     Register a new user with a username and password.
-    Passwords are hashed before being stored.
     """
     existing_user = db.query(RegisteredUser).filter(RegisteredUser.username == username).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="Username already taken")
 
-    hashed_password = pwd_context.hash(password)
+    hashed_password = hash_password(password)
     new_user = RegisteredUser(username=username, hashed_password=hashed_password)
     db.add(new_user)
     db.commit()
@@ -43,7 +51,7 @@ def login_user(username: str, password: str, db: Session, response: Response):
     if not user:
         raise HTTPException(status_code=404, detail="User does not exist.")
 
-    if not pwd_context.verify(password, user.hashed_password):
+    if not verify_password(password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Incorrect password.")
 
     # Generate JWT token
@@ -53,8 +61,8 @@ def login_user(username: str, password: str, db: Session, response: Response):
     response.set_cookie(
         key="access_token",
         value=token,
-        httponly=True,  # Prevents JavaScript access
-        samesite="Lax",  # Helps with CSRF protection
+        httponly=True,
+        samesite="Lax",
         secure=False  # Set to True in production (requires HTTPS)
     )
 

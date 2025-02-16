@@ -1,51 +1,53 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 
 const Home = () => {
-  const navigate = useNavigate();
+    const [searchQuery, setSearchQuery] = useState("");
+    const [movieData, setMovieData] = useState(null);
+    const [error, setError] = useState(null);
 
-  const handleLogout = async () => {
-    try {
-      await fetch("http://localhost:8000/logout", {
-        method: "POST",
-        credentials: "include", // Ensure cookies are included
-      });
+    const handleSearch = async (event) => {
+        event.preventDefault();
+        setError(null);
+        setMovieData(null);
 
-      navigate("/"); // Redirect to login page after logout
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
-  };
+        try {
+            const response = await fetch(`http://localhost:8000/movies/${searchQuery}`);
+            const data = await response.json();
 
-  return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-        flexDirection: "column",
-      }}
-    >
-      <h2>Welcome to the Movie App</h2>
-      <p>This is where all future functionalities will be added.</p>
-      <button
-        onClick={handleLogout}
-        style={{
-          padding: "10px 20px",
-          marginTop: "20px",
-          backgroundColor: "#dc3545",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-          fontSize: "16px",
-        }}
-      >
-        Logout
-      </button>
-    </div>
-  );
+            if (data.error) {
+                setError("Movie not found");
+            } else {
+                setMovieData(data);
+            }
+        } catch (err) {
+            setError("Error fetching movie data");
+        }
+    };
+
+    return (
+        <div className="container">
+            <h1>Movie Search</h1>
+            <form onSubmit={handleSearch}>
+                <input
+                    type="text"
+                    placeholder="Enter movie title..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <button type="submit">Search</button>
+            </form>
+
+            {error && <p style={{ color: "red" }}>{error}</p>}
+
+            {movieData && (
+                <div className="movie-info">
+                    <h2>{movieData.name} ({movieData.year})</h2>
+                    <img src={movieData.poster} alt={movieData.name} style={{ width: "200px" }} />
+                    <p>{movieData.description}</p>
+                </div>
+            )}
+        </div>
+    );
 };
 
 export default Home;

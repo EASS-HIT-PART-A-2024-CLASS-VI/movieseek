@@ -10,8 +10,9 @@ from app.dependencies import get_db
 from app.services.user_service import register_user, fetch_registered_users, login_user
 from app.database import Base, engine
 
-# OMDB Microservice URL
-OMDB_SERVICE_URL = "http://omdb_service:8001/search"
+# ✅ Update: TMDB Microservice URLs
+TMDB_SEARCH_URL = "http://tmdb_service:8001/search"
+TMDB_TRENDING_URL = "http://tmdb_service:8001/trending"
 
 # Secret key (must match the one in `user_service.py`)
 SECRET_KEY = "your_secret_key"
@@ -81,13 +82,25 @@ def get_registered_users(db: Session = Depends(get_db)):
 @app.get("/movies/{title}")
 def get_movie(title: str):
     """
-    Fetches movie details from the OMDB Microservice.
+    ✅ Fetch movie details from the TMDB Microservice.
     """
-    response = requests.get(OMDB_SERVICE_URL, params={"title": title})  # Use "title" instead of "query"
+    response = requests.get(TMDB_SEARCH_URL, params={"title": title})
 
     if response.status_code == 200:
         return response.json()
     raise HTTPException(status_code=response.status_code, detail="Error fetching movie details")
+
+
+@app.get("/trending-movies")
+def get_trending_movies():
+    """
+    ✅ Fetch trending movies from the TMDB Microservice.
+    """
+    response = requests.get(TMDB_TRENDING_URL)  # Fetch trending movies
+
+    if response.status_code == 200:
+        return response.json()
+    raise HTTPException(status_code=response.status_code, detail="Error fetching trending movies")
 
 
 @app.get("/protected")

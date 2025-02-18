@@ -54,19 +54,22 @@ services:
     image: mysql:8.0
     container_name: mysql_container
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}  # Sets the root password
+      - MYSQL_DATABASE=${DB_NAME}  # Creates database 'movieseekdb'
+      - MYSQL_USER=${DB_USER}  # ✅ Creates user 'Vlad' if it does not exist
+      - MYSQL_PASSWORD=${DB_PASSWORD}  # ✅ Sets password for 'Vlad'
     ports:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
     networks:
       - app-network
-    healthcheck:  # ✅ Added health check for MySQL readiness
+    healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       retries: 5
       timeout: 5s
+
 
   frontend:
     build:

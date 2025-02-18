@@ -1,4 +1,3 @@
-
 services:
   api:
     build: ./backend
@@ -9,8 +8,8 @@ services:
     depends_on:
       db:
         condition: service_healthy  # ✅ Waits for MySQL to be ready
-      omdb_service: 
-        condition: service_started  # ✅ Ensures OMDB starts first
+      tmdb_service: 
+        condition: service_started  # ✅ Ensures TMDB microservice starts first
     env_file:
       - .env  # Path to the .env file in the 'backend' directory
     volumes:
@@ -19,14 +18,14 @@ services:
     networks:
       - app-network
 
-  omdb_service:
-    build: ./microservices/omdb
-    image: my-omdb-service:latest
-    container_name: omdb_service_container
+  tmdb_service:
+    build: ./microservices/tmdb  # ✅ Updated to TMDB service
+    image: my-tmdb-service:latest
+    container_name: tmdb_service_container
     ports:
       - "8001:8001"
     environment:
-      - OMDB_API_KEY=${OMDB_API_KEY}  # Correct env variable
+      - TMDB_API_KEY=${TMDB_API_KEY}  # ✅ Correct environment variable
     networks:
       - app-network
 
@@ -37,13 +36,13 @@ services:
     depends_on:
       db:
         condition: service_healthy  # ✅ Ensures MySQL is ready before running tests
-      omdb_service:
-        condition: service_started  # ✅ Ensures OMDB is running
+      tmdb_service:
+        condition: service_started  # ✅ Ensures TMDB microservice is running
     volumes:
       - .:/app
     environment:
-      - PYTHONPATH=/app/backend:/app/microservices/omdb
-      - PASSLIB_DEFAULT_SCHEME=bcrypt  # Force bcrypt, disable crypt
+      - PYTHONPATH=/app/backend:/app/microservices/tmdb
+      - PASSLIB_DEFAULT_SCHEME=bcrypt  # ✅ Force bcrypt, disable crypt
     env_file:
       - .env
     command: pytest
@@ -54,10 +53,10 @@ services:
     image: mysql:8.0
     container_name: mysql_container
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}  # Sets the root password
-      - MYSQL_DATABASE=${DB_NAME}  # Creates database 'movieseekdb'
-      - MYSQL_USER=${DB_USER}  # ✅ Creates user 'Vlad' if it does not exist
-      - MYSQL_PASSWORD=${DB_PASSWORD}  # ✅ Sets password for 'Vlad'
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}  # ✅ Sets the password
+      - MYSQL_DATABASE=${DB_NAME}  # ✅ Creates database 
+      - MYSQL_USER=${DB_USER}  # ✅ Creates user 
+      - MYSQL_PASSWORD=${DB_PASSWORD}  # ✅ Sets password 
     ports:
       - "3306:3306"
     volumes:
@@ -70,7 +69,6 @@ services:
       retries: 5
       timeout: 5s
 
-
   frontend:
     build:
       context: ./frontend
@@ -79,8 +77,8 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./frontend:/app  # Mount local directory to container for live updates
-      - /app/node_modules  # Prevents conflicts between local and container dependencies
+      - ./frontend:/app  # ✅ Mount local directory to container for live updates
+      - /app/node_modules  # ✅ Prevents conflicts between local and container dependencies
     command: npm start
     networks:
       - app-network

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "../components/Home.css";
 import TrendingMovies from "../components/TrendingMovies";
 import MovieSearch from "../components/MovieSearch";
@@ -7,14 +7,39 @@ import MovieSearch from "../components/MovieSearch";
 const Home = () => {
     const [movieData, setMovieData] = useState(null);
     const [error, setError] = useState(null);
-    const navigate = useNavigate(); // Hook for navigation
+    const [username, setUsername] = useState(""); // Store logged-in user
+    const navigate = useNavigate();
+
+    // Fetch authenticated user data
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const response = await fetch("http://localhost:8000/protected", {
+                    method: "GET",
+                    credentials: "include", // Include cookies
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setUsername(data.username); // Extract username from response
+                } else {
+                    throw new Error("Not authenticated");
+                }
+            } catch (error) {
+                console.error("Authentication error:", error);
+                navigate("/"); // Redirect to login if not authenticated
+            }
+        };
+
+        fetchUser();
+    }, [navigate]);
 
     // Logout function
     const handleLogout = async () => {
         try {
             await fetch("http://localhost:8000/logout", {
                 method: "POST",
-                credentials: "include", // Ensure cookies are included for logout
+                credentials: "include",
             });
 
             navigate("/"); // Redirect to login after logout
@@ -25,14 +50,13 @@ const Home = () => {
 
     return (
         <div className="container">
-            {/* Logout Button */}
-            <div className="logout-container">
+            <div className="header">
+                <h2>Welcome, {username || "User"}!</h2>
                 <button onClick={handleLogout} className="logout-button">
                     Logout
                 </button>
             </div>
 
-            {/* Movie Search Section */}
             <MovieSearch setMovieData={setMovieData} setError={setError} />
 
             {error && <p className="error-message">{error}</p>}
@@ -45,7 +69,6 @@ const Home = () => {
                 </div>
             )}
 
-            {/* Trending Movies Section */}
             <TrendingMovies />
         </div>
     );

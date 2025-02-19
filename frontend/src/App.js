@@ -3,7 +3,8 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
-import ProtectedRoute from "./components/ProtectedRoute"; // Import protected route
+import MoviePage from "./pages/MoviePage"; 
+import ProtectedRoute from "./components/ProtectedRoute"; 
 
 function App() {
   return (
@@ -11,7 +12,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route
+        <Route 
           path="/home"
           element={
             <ProtectedRoute>
@@ -19,6 +20,14 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route 
+          path="/movie/:id"
+          element={
+            <ProtectedRoute>
+              <MoviePage />
+            </ProtectedRoute>
+          }
+        /> {/* ✅ Protects movie page */}
       </Routes>
     </Router>
   );

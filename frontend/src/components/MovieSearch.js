@@ -1,25 +1,15 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // ✅ Import useNavigate
 
-const MovieSearch = ({ setMovieData, setError }) => {
+const MovieSearch = () => {
     const [searchQuery, setSearchQuery] = useState("");
+    const navigate = useNavigate(); // ✅ Hook for navigation
 
     const handleSearch = async (event) => {
         event.preventDefault();
-        setError(null);
-        setMovieData(null);
-
-        try {
-            const response = await fetch(`http://localhost:8000/movies/${searchQuery}`);
-            const data = await response.json();
-
-            if (data.error) {
-                setError("Movie not found");
-            } else {
-                setMovieData(data);
-            }
-        } catch (err) {
-            setError("Error fetching movie data");
-        }
+        if (!searchQuery.trim()) return; // Prevent empty search
+        
+        navigate(`/movie/${searchQuery}`); // ✅ Navigate to the movie page
     };
 
     return (

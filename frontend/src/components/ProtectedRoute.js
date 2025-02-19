@@ -7,7 +7,7 @@ const ProtectedRoute = ({ children }) => {
   useEffect(() => {
     fetch("http://localhost:8000/protected", {
       method: "GET",
-      credentials: "include", // Include cookies for authentication check
+      credentials: "include", // Ensure cookies are sent
     })
       .then((response) => {
         if (response.ok) {
@@ -19,7 +19,7 @@ const ProtectedRoute = ({ children }) => {
       .catch(() => setIsAuthenticated(false));
   }, []);
 
-  if (isAuthenticated === null) return <p>Loading...</p>; // Prevents flickering
+  if (isAuthenticated === null) return <p>Loading...</p>;
 
   return isAuthenticated ? children : <Navigate to="/" />;
 };

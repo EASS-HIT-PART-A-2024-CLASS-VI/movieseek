@@ -13,23 +13,23 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setMessage(""); // Clear previous messages
+
     try {
       const response = await fetch("http://localhost:8000/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userData),
-        credentials: "include", // Allow browser to store the JWT in HttpOnly cookies
+        credentials: "include", // Send cookies
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.detail);
+        throw new Error(errorData.detail || "Login failed. Please try again.");
       }
 
       setMessage("Login successful!");
-      setTimeout(() => {
-        navigate("/home"); // Redirect to home page
-      }, 1000);
+      navigate("/home"); // Redirect immediately after login
     } catch (error) {
       setMessage(error.message);
     }

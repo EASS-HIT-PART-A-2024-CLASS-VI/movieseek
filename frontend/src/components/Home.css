@@ -1,63 +1,24 @@
-/* Home.css */
-.container {
-    text-align: center;
+/* 🎬 Section Box for Trending & Top Rated Movies */
+.section-box {
+    background: #f5f5f5; /* Light grey background */
     padding: 20px;
-    font-family: Arial, sans-serif;
+    margin: 20px auto; /* Space between sections */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for 3D effect */
+    max-width: 1200px; /* Keep it centered and not too wide */
 }
 
-/* 🎬 Search Bar */
-.search-form {
-    margin-bottom: 20px;
-}
-
-.search-input {
-    padding: 10px;
-    width: 250px;
-    font-size: 16px;
-    border: 2px solid #ddd;
-    border-radius: 5px;
-}
-
-.search-button {
-    padding: 10px 15px;
-    margin-left: 10px;
-    font-size: 16px;
-    border: none;
-    background-color: #007bff;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.search-button:hover {
-    background-color: #0056b3;
-}
-
-/* 🎥 Movie Details */
-.movie-info {
-    margin-top: 20px;
-    padding: 20px;
-    background: #f9f9f9;
-    border-radius: 10px;
-    display: inline-block;
-    text-align: left;
-    max-width: 500px;
-}
-
-.movie-poster {
-    width: 200px;
-    border-radius: 10px;
-}
-
-/* 🔥 Trending Movies */
-.trending-movies {
+/* 🔥 Trending & ⭐ Top Rated Movies */
+.trending-movies, 
+.top-rated-movies {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);  /* ✅ 4 movies per row */
+    grid-template-columns: repeat(5, 1fr);  /* ✅ 5 movies per row */
     gap: 20px;
     padding: 20px;
     justify-items: center;
 }
 
+/* 🎬 Movie Card */
 .movie-card {
     background: #fff;
     padding: 10px;
@@ -82,4 +43,30 @@
     color: red;
     font-size: 16px;
     margin-top: 10px;
+}
+
+/* ⭐ Pagination Buttons */
+.pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.page-button {
+    background-color: #ddd;
+    border: none;
+    padding: 8px 12px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.page-button:hover {
+    background-color: #bbb;
+}
+
+.page-button.active {
+    background-color: #007bff;
+    color: white;
 }

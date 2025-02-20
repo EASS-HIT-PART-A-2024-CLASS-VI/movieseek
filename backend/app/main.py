@@ -13,6 +13,7 @@ from app.database import Base, engine
 # ✅ Update: TMDB Microservice URLs
 TMDB_SEARCH_URL = "http://tmdb_service:8001/search"
 TMDB_TRENDING_URL = "http://tmdb_service:8001/trending"
+TMDB_TOP_RATED_URL = "http://tmdb_service:8001/top-rated"  # ✅ New: Fetch Top Rated Movies
 
 # Secret key (must match the one in `user_service.py`)
 SECRET_KEY = "your_secret_key"
@@ -101,6 +102,18 @@ def get_trending_movies():
     if response.status_code == 200:
         return response.json()
     raise HTTPException(status_code=response.status_code, detail="Error fetching trending movies")
+
+
+@app.get("/top-rated-movies")
+def get_top_rated_movies(page: int = 1):  # ✅ Accept page number
+    """
+    Fetch top-rated movies from the TMDB Microservice with pagination.
+    """
+    response = requests.get(f"{TMDB_TOP_RATED_URL}?page={page}")  # ✅ Fetch the selected page
+
+    if response.status_code == 200:
+        return response.json()
+    raise HTTPException(status_code=response.status_code, detail="Error fetching top-rated movies")
 
 
 @app.get("/protected")

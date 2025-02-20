@@ -71,3 +71,27 @@ def fetch_trending_movies():
         ]
     else:
         return {"error": f"Failed to fetch trending movies. Status code: {response.status_code}"}
+
+def fetch_top_rated_movies(page=1):
+    """
+    Fetch 20 top-rated movies from TMDB API with pagination.
+    """
+    top_rated_url = f"{BASE_URL}/movie/top_rated"
+    params = {"api_key": API_KEY, "page": page}  # ✅ Fetch specific page
+
+    response = requests.get(top_rated_url, params=params)
+    if response.status_code == 200:
+        data = response.json()
+        movies = data.get("results", [])
+
+        return [
+            {
+                "name": movie.get("title"),
+                "year": movie.get("release_date", "")[:4],
+                "description": movie.get("overview"),
+                "poster": IMAGE_BASE_URL + movie["poster_path"] if movie.get("poster_path") else None
+            }
+            for movie in movies
+        ]
+    else:
+        return {"error": f"Failed to fetch top-rated movies. Status code: {response.status_code}"}

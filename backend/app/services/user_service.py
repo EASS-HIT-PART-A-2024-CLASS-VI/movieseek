@@ -19,13 +19,14 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     """
     return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
 
-def create_jwt_token(data: dict, expires_delta: int = 60):
+def create_jwt_token(user: dict, expires_delta: int = 60):
     """
     Creates a JWT token with an expiration time.
     """
     expire = datetime.now(timezone.utc) + timedelta(minutes=expires_delta)
-    data.update({"exp": expire})
+    data = {"id": user["id"], "username": user["username"], "exp": expire}  # ✅ Include `id`
     return jwt.encode(data, SECRET_KEY, algorithm="HS256")
+
 
 def register_user(username: str, password: str, db: Session):
     """
@@ -54,10 +55,10 @@ def login_user(username: str, password: str, db: Session, response: Response):
     if not verify_password(password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Incorrect password.")
 
-    # Generate JWT token
-    token = create_jwt_token({"username": user.username})
+    # ✅ Generate JWT token with `id` and `username`
+    token = create_jwt_token({"id": user.id, "username": user.username})
 
-    # Set JWT token in an HttpOnly cookie
+    # ✅ Set JWT token in an HttpOnly cookie
     response.set_cookie(
         key="access_token",
         value=token,
@@ -67,6 +68,7 @@ def login_user(username: str, password: str, db: Session, response: Response):
     )
 
     return {"message": "Login successful"}
+
 
 def fetch_registered_users(db: Session):
     """

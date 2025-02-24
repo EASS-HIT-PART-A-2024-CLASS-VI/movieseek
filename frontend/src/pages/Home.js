@@ -8,7 +8,6 @@ import MovieSearch from "../components/MovieSearch";
 const Home = () => {
     const [movieData, setMovieData] = useState(null);
     const [error, setError] = useState(null);
-    const [username, setUsername] = useState("");
     const navigate = useNavigate();
 
     // Fetch authenticated user data
@@ -20,10 +19,7 @@ const Home = () => {
                     credentials: "include",
                 });
 
-                if (response.ok) {
-                    const data = await response.json();
-                    setUsername(data.username);
-                } else {
+                if (!response.ok) {
                     throw new Error("Not authenticated");
                 }
             } catch (error) {
@@ -51,15 +47,17 @@ const Home = () => {
 
     return (
         <div className="container">
-            <div className="header">
-                <h2>Welcome, {username || "User"}!</h2>
-                <button onClick={handleLogout} className="logout-button">
+            {/* Logout link (styled as text) */}
+            <div className="logout-container">
+                <span className="logout-link" onClick={handleLogout}>
                     Logout
-                </button>
+                </span>
             </div>
 
-            {/* Movie Search Bar */}
-            <MovieSearch setMovieData={setMovieData} setError={setError} />
+            {/* Centered Movie Search Bar */}
+            <div className="search-container">
+                <MovieSearch setMovieData={setMovieData} setError={setError} />
+            </div>
 
             {error && <p className="error-message">{error}</p>}
 
@@ -74,12 +72,12 @@ const Home = () => {
 
             {/* Trending Movies Section */}
             <div className="section-box">
-                <TrendingMovies /> {/* ✅ Removed duplicate headline */}
+                <TrendingMovies />
             </div>
 
             {/* Top Rated Movies Section */}
             <div className="section-box">
-                <TopRatedMovies /> {/* ✅ Removed duplicate headline */}
+                <TopRatedMovies />
             </div>
         </div>
     );

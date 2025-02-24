@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import MoviePage from "./pages/MoviePage"; 
 import SavedMovies from "./pages/SavedMovies"; 
 import ProtectedRoute from "./components/ProtectedRoute"; 
+import "./App.css"; // ✅ Ensure this line is at the top of App.js
 
 function Navigation() {
   const location = useLocation();

@@ -1,3 +1,15 @@
+/* 🔹 Optional Dark Overlay for Better Readability */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3); /* ✅ Adjust the opacity if needed */
+    z-index: -1;
+}
+
 /* 🎬 Section Box for Trending & Top Rated Movies */
 .section-box {
     background: #f5f5f5; /* Light grey background */
@@ -69,4 +81,28 @@
 .page-button.active {
     background-color: #007bff;
     color: white;
+}
+
+/* 🔹 Logout link styled as text */
+.logout-container {
+    text-align: right;
+    margin: 10px 20px;
+}
+
+.logout-link {
+    color: #007bff;
+    cursor: pointer;
+    font-size: 16px;
+    text-decoration: none;
+}
+
+.logout-link:hover {
+    text-decoration: underline;
+}
+
+/* 🔹 Center the search bar */
+.search-container {
+    display: flex;
+    justify-content: center;
+    margin: 30px 0;
 }

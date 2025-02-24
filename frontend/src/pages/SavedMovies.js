@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import MovieCard from "../components/MovieCard"; // ✅ Reusable movie component
+import "../components/Home.css"; // ✅ Ensure consistent styles
 
 const SavedMovies = () => {
     const [savedMovies, setSavedMovies] = useState([]);
@@ -35,7 +37,6 @@ const SavedMovies = () => {
             });
 
             if (response.ok) {
-                setMessage(`✅ Movie "${movieName}" removed!`);
                 setSavedMovies(savedMovies.filter((movie) => movie.movie_name !== movieName));
             } else {
                 setMessage(`❌ Error removing movie.`);
@@ -46,26 +47,24 @@ const SavedMovies = () => {
     };
 
     return (
-        <div>
-            <h2>🎞️ Saved Movies</h2>
+        <div className="container">
+            <h2>🎞️ Your Saved Movies</h2>
 
             {error && <p className="error-message">{error}</p>}
             {message && <p className="message">{message}</p>}
 
-            <div className="saved-movies">
+            <div className="trending-movies">
                 {savedMovies.length > 0 ? (
-                    savedMovies.map((movie, index) => (
-                        <div key={index} className="movie-card">
-                            <img src={movie.movie_poster} alt={movie.movie_name} className="movie-thumbnail" />
-                            <h3>{movie.movie_name} ({movie.movie_year})</h3>
-                            <p>{movie.movie_description}</p>
-                            <button onClick={() => handleRemoveMovie(movie.movie_name)} className="remove-button">
-                                ❌ Remove
-                            </button>
-                        </div>
+                    savedMovies.map((movie) => (
+                        <MovieCard 
+                            key={movie.movie_name} 
+                            movie={movie} 
+                            onRemove={handleRemoveMovie} // ✅ Pass remove function
+                            showRemoveButton={true} // ✅ Enable remove button
+                        />
                     ))
                 ) : (
-                    <p>No saved movies yet.</p>
+                    <p className="no-movies">No saved movies yet. Start adding some!</p>
                 )}
             </div>
         </div>

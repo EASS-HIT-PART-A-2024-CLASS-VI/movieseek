@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 class UserLogin(BaseModel):
     username: str
@@ -14,5 +14,4 @@ class SavedMovieSchema(BaseModel):
     movie_description: str | None = None
     movie_poster: str | None = None
 
-    class Config:
-        from_attributes = True  # ✅ Fix for Pydantic V2
+    model_config = ConfigDict(from_attributes=True)  # ✅ Updated for Pydantic V2

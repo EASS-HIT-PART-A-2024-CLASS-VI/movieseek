@@ -1,3 +1,4 @@
+
 services:
   api:
     build: ./backend
@@ -53,10 +54,10 @@ services:
     image: mysql:8.0
     container_name: mysql_container
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}  # ✅ Sets the password
-      - MYSQL_DATABASE=${DB_NAME}  # ✅ Creates database 
-      - MYSQL_USER=${DB_USER}  # ✅ Creates user 
-      - MYSQL_PASSWORD=${DB_PASSWORD}  # ✅ Sets password 
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}  # ✅ Root password
+      - MYSQL_DATABASE=${DB_NAME}  # ✅ Creates database
+      - MYSQL_USER=${DB_USER}  # ✅ Creates a non-root user
+      - MYSQL_PASSWORD=${DB_PASSWORD}  # ✅ Password for the non-root user
     ports:
       - "3306:3306"
     volumes:

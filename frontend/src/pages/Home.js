@@ -58,26 +58,28 @@ const Home = () => {
                 </button>
             </div>
 
+            {/* Movie Search Bar */}
             <MovieSearch setMovieData={setMovieData} setError={setError} />
 
             {error && <p className="error-message">{error}</p>}
 
+            {/* Display the searched movie */}
             {movieData && (
                 <div className="movie-info">
                     <h2>{movieData.name} ({movieData.year})</h2>
-                    <img src={movieData.poster} alt={movieData.name} className="movie-poster" />
+                    <img src={movieData.poster} alt={movieData.name} className="movie-thumbnail" />
                     <p>{movieData.description}</p>
                 </div>
             )}
 
-            {/* 🔥 Trending Movies Section with a Box */}
+            {/* Trending Movies Section */}
             <div className="section-box">
-                <TrendingMovies />
+                <TrendingMovies /> {/* ✅ Removed duplicate headline */}
             </div>
 
-            {/* ⭐ Top Rated Movies Section with a Box */}
+            {/* Top Rated Movies Section */}
             <div className="section-box">
-                <TopRatedMovies />
+                <TopRatedMovies /> {/* ✅ Removed duplicate headline */}
             </div>
         </div>
     );

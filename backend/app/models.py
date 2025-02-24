@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship
 from app.database import Base
 
@@ -19,7 +19,10 @@ class SavedMovie(Base):
     user_id = Column(Integer, ForeignKey("registered_users.id", ondelete="CASCADE"))
     movie_name = Column(String(255), nullable=False)
     movie_year = Column(String(10), nullable=True)
-    movie_description = Column(String(500), nullable=True)
+    movie_description = Column(String(1000), nullable=True)
     movie_poster = Column(String(255), nullable=True)
 
     user = relationship("RegisteredUser", back_populates="saved_movies")
+
+    # ✅ UNIQUE CONSTRAINT to prevent duplicate movie saves per user
+    __table_args__ = (UniqueConstraint("user_id", "movie_name", name="uq_user_movie"),)

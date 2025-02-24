@@ -6,10 +6,17 @@ from app.schemas import SavedMovieSchema
 def save_movie(user_id: int, movie: SavedMovieSchema, db: Session):
     """
     Saves a movie for the authenticated user.
+    If the movie is already saved, it simply returns the existing movie.
     """
-    user = db.query(RegisteredUser).filter(RegisteredUser.id == user_id).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+
+    # ✅ Check if the movie is already saved by this user
+    existing_movie = db.query(SavedMovie).filter(
+        SavedMovie.user_id == user_id,
+        SavedMovie.movie_name == movie.movie_name
+    ).first()
+
+    if existing_movie:
+        return existing_movie  # ✅ Simply return the already saved movie (no error)
 
     new_movie = SavedMovie(
         user_id=user_id,

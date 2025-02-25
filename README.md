@@ -1,58 +1,137 @@
 # MovieSeek 🎬
 
-![MovieSeekLogo](./MovieSeekLogo.png)
+![MovieSeekLogo](./ReadMePics/MovieSeekLogo.png)
 
-MovieSeek is a dynamic and user-friendly web application designed for movie enthusiasts. It provides a seamless platform for users to discover movies, create an account, and save their favorite titles for future reference. 
+MovieSeek is a **modern and user-friendly** movie search web application. It allows users to **explore** movies, **watch trailers**, **save favorites**, and **manage their movie collection** with a seamless user experience.
 
-## Key Features
-- **Movie Search:** Quickly find detailed information about movies using an intuitive search interface.
-- **User Accounts:** Sign up and log in to personalize your experience and save favorites.
-- **Favorites Management:** Save your top picks to your account and access them anytime.
+---
 
-## Technology Stack
-MovieSeek is built with modern technologies to ensure performance, scalability, and ease of development:
-- **Backend:** Powered by [FastAPI](https://fastapi.tiangolo.com/), a high-performance Python framework for building APIs.
-- **Frontend:** [React](https://reactjs.org/) for building a dynamic and responsive user interface.
-- **Database:** Uses MySQL to store user data and movie information efficiently.
-- **Containerization:** Employs Docker to create a robust and portable development environment, simplifying deployment and ensuring consistency across different systems.
+## **Key Features** ✨
 
-## Environment Setup 🌱
-To configure the necessary environment variables for the project, follow these steps:
+✔️ **Movie Search:** Find detailed movie information using an intuitive search interface.  
+✔️ **Movie Trailers:** Watch trailers for movies directly from the app.  
+✔️ **Trending & Top Rated:** Discover popular and top-rated movies.  
+✔️ **User Authentication:** Secure login and registration for a personalized experience.  
+✔️ **Favorites Management:** Save and manage your favorite movies in your personal account.  
+✔️ **Microservices Architecture:** Backend communicates with a **separate microservice** to fetch movie data from **TMDB API**.  
+✔️ **Dockerized MySQL Database:** Uses the **official MySQL container from Docker Hub** for storing user data and saved movies.  
 
-1. Locate the `.env.example` file in the project root directory.
-2. Create a copy of the `.env.example` file and rename it to `.env`:
-   ```bash
-   cp .env.example .env
-   ```
-3. Open the newly created `.env` file and replace the placeholder values with your actual configuration details. For example:
+---
+
+## **Technology Stack** 🛠️
+
+MovieSeek is built using a **modern, scalable** technology stack:
+
+### **Backend** 🚀
+
+🔹 **[FastAPI](https://fastapi.tiangolo.com/)** - High-performance Python framework for APIs.  
+🔹 **MySQL (Dockerized)** - Uses the **official MySQL container from Docker Hub** for user authentication and saved movies.  
+🔹 **TMDB API Microservice** - A separate **FastAPI-based microservice** that fetches movie data, genres, and trailers from **[TMDB](https://www.themoviedb.org/)**.  
+🔹 **JWT Authentication** - Secure authentication and session management using JSON Web Tokens.  
+
+### **Frontend** 🎨
+
+🔹 **[React](https://reactjs.org/)** - Builds a dynamic, responsive UI.  
+🔹 **CSS & Styled Components** - Ensures a sleek, movie-themed design.  
+
+### **Infrastructure & Deployment** 🏗️
+
+🔹 **[Docker](https://www.docker.com/)** - **Backend, microservice, and MySQL database** run inside Docker containers.  
+🔹 **FastAPI Microservices** - Uses a **modular approach** for better maintainability and separation of concerns.  
+
+---
+
+## **Screenshots** 📸
+![HomePagePic](./ReadMePics/HomePage.png)  
+
+---
+
+## **Project Structure** 🌳
 ```
-API_KEY=your_actual_api_key
+movieseek
+    ├── README.md
+    ├── ReadMePics
+    │   ├── HomePage.png
+    │   └── MovieSeekLogo.png
+    ├── backend
+    │   ├── Dockerfile
+    │   ├── app
+    │   ├── requirements.txt
+    │   └── tests
+    ├── docker-compose.yml
+    ├── frontend
+    │   ├── Dockerfile
+    │   ├── package-lock.json
+    │   ├── package.json
+    │   ├── public
+    │   └── src
+    └── microservices
+        └── tmdb 
+```
+---
+
+## **Environment Setup 🌱**
+
+Before running the project, you need to set up the required **environment variables**.
+
+### **1️⃣ Create an `.env` file**  
+```bash
+cp .env.example .env
+
+2️⃣ Configure the following variables in .env:
+```
+# TMDB API Key for the microservice
+API_KEY=your_actual_tmdb_api_key
+
+# MySQL Database Configuration
 DB_HOST=your_database_host
 DB_NAME=your_database_name
 DB_USER=your_database_user
 DB_PASSWORD=your_database_password
 MYSQL_ROOT_PASSWORD=your_root_password
 ```
-4. Save the .env file. The project will now use these environment variables during execution.
+3️⃣ Save the file. Your project will now use these variables at runtime.
 
-## Project Structure 🌳
+How to Run the Project 🏃‍♂️
+Follow these steps to clone, set up, and run MovieSeek on your local machine.
+1️⃣ Clone the Repository
 ```
-movieseek/
-├── backend/                 # FastAPI backend
-│   ├── app/
-│   │   ├── main.py          # Entry point for the FastAPI app
-│   │   ├── services/        # Business logic and service layer
-│   │   └── ...
-│   ├── requirements.txt     # Python dependencies
-│   └── ...
-├── frontend/                # React frontend (contents hidden)
-├── .env                     # Environment variables
-├── .env.example             # Example environment variables
-├── README.md                # Project README file
-├── docker-compose.yml       # Docker Compose configuration
-├── .gitignore               # Ignore file for telling the git what files to ignore from publishing
-└── ...
+git clone https://github.com/yourusername/movieseek.git
+cd movieseek
+```
+2️⃣ Start the Application (Docker Setup) 🐳
+Ensure Docker and Docker Compose are installed on your machine.
+```docker-compose up --build
 ```
 
+This will start the following Docker containers:
+
+Backend (FastAPI)
+Frontend (React)
+TMDB Microservice (FastAPI)
+MySQL Database (Pulled from Docker Hub)
+3️⃣ Access the App
+📌 Frontend: http://localhost:3000
+📌 Backend API: http://localhost:8000/docs (Swagger API documentation for testing endpoints.)
+📌 TMDB Microservice: http://localhost:8001/docs (Swagger API docs for the microservice.)
+
+How the Microservice Works 🛰️
+The backend does not directly communicate with TMDB. Instead, it interacts with a FastAPI microservice that:
+
+Receives requests from the backend for movie data.
+Fetches data from TMDB API including movie details, genres, and trailers.
+Returns the formatted data to the backend, which then sends it to the frontend.
+This approach ensures:
+
+Better modularity (Backend is independent of TMDB API changes).
+Improved security (TMDB API key is stored only in the microservice).
+Scalability (The microservice can be extended for more features).
+
+Contributing 🤝
+We welcome contributions! If you'd like to improve MovieSeek, follow these steps:
+
+1️⃣ Fork the repository
+2️⃣ Create a feature branch
+3️⃣ Make your changes & submit a pull request
 
 

@@ -12,7 +12,6 @@ from app.services.movie_service import save_movie, get_saved_movies, remove_save
 from app.database import Base, engine
 from app.models import RegisteredUser  # ✅ Fix: Import RegisteredUser
 
-
 # ✅ Update: TMDB Microservice URLs
 TMDB_SEARCH_URL = "http://tmdb_service:8001/search"
 TMDB_TRENDING_URL = "http://tmdb_service:8001/trending"
@@ -56,7 +55,6 @@ def verify_token(request: Request, db: Session = Depends(get_db)):
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Invalid token")
 
-
 @app.post("/")
 def login_endpoint(credentials: UserLogin, response: Response, db: Session = Depends(get_db)):
     """
@@ -67,8 +65,11 @@ def login_endpoint(credentials: UserLogin, response: Response, db: Session = Dep
 @app.post("/register")
 def register_user_endpoint(user: UserRegistration, db: Session = Depends(get_db)):
     """
-    Registers a new user.
+    Registers a new user with validation.
     """
+    if not user.username.strip() or not user.password.strip():
+        raise HTTPException(status_code=400, detail="Username and password cannot be empty.")
+
     return register_user(user.username, user.password, db)
 
 @app.get("/registered-users")
@@ -98,7 +99,6 @@ def get_movie(title: str):
         }
 
     raise HTTPException(status_code=response.status_code, detail="Error fetching movie details")
-
 
 @app.get("/trending-movies")
 def get_trending_movies():

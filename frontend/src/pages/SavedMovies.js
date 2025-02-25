@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import MovieCard from "../components/MovieCard"; // ✅ Reusable movie component
-import "../components/Home.css"; // ✅ Ensure consistent styles
+import MovieCard from "../components/MovieCard"; // ✅ Reusable MovieCard component
+import "../components/Home.css"; // ✅ Consistent styling
 
 const SavedMovies = () => {
     const [savedMovies, setSavedMovies] = useState([]);
@@ -10,18 +10,20 @@ const SavedMovies = () => {
     useEffect(() => {
         const fetchSavedMovies = async () => {
             try {
-                const response = await fetch("http://localhost:8000/saved-movies", {
+                const response = await fetch("http://localhost:8000/saved-movies", { 
                     method: "GET",
-                    credentials: "include", // ✅ Send authentication cookies
-                });
+                    credentials: "include",
+                });                
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch saved movies");
+                }
 
                 const data = await response.json();
-                if (response.ok) {
-                    setSavedMovies(data);
-                } else {
-                    setError("Failed to fetch saved movies");
-                }
+                console.log("Fetched Saved Movies:", data); // ✅ Debugging log
+                setSavedMovies(data);
             } catch (err) {
+                console.error("Error fetching saved movies:", err);
                 setError("Error fetching saved movies");
             }
         };
@@ -38,11 +40,13 @@ const SavedMovies = () => {
 
             if (response.ok) {
                 setSavedMovies(savedMovies.filter((movie) => movie.movie_name !== movieName));
+                setMessage(`✅ Removed "${movieName}" successfully!`);
             } else {
-                setMessage(`❌ Error removing movie.`);
+                setMessage("❌ Error removing movie.");
             }
         } catch (err) {
-            setMessage("❌ Failed to remove movie");
+            console.error("Remove movie error:", err);
+            setMessage("❌ Failed to remove movie.");
         }
     };
 

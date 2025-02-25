@@ -12,6 +12,12 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // ✅ Check if username and password are at least 4 characters
+    if (userData.username.trim().length < 4 || userData.password.trim().length < 4) {
+      setMessage("❌ Username and password must be at least 4 characters long.");
+      return;
+    }
+
     try {
       const response = await fetch("http://localhost:8000/register", {
         method: "POST",
@@ -24,7 +30,7 @@ const Register = () => {
         throw new Error(errorData.detail);
       }
 
-      setMessage("Registration successful! Redirecting to login...");
+      setMessage("✅ Registration successful! Redirecting to login...");
       setTimeout(() => {
         window.location.href = "/";
       }, 2000);
@@ -54,7 +60,7 @@ const Register = () => {
           <input
             type="text"
             name="username"
-            placeholder="Username"
+            placeholder="Username (min 4 characters)"
             value={userData.username}
             onChange={handleChange}
             style={{
@@ -69,7 +75,7 @@ const Register = () => {
           <input
             type="password"
             name="password"
-            placeholder="Password"
+            placeholder="Password (min 4 characters)"
             value={userData.password}
             onChange={handleChange}
             style={{

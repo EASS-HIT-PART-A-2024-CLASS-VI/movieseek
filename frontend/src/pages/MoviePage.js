@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import "../components/MoviePage.css"; // ✅ Corrected path to components directory
 
 const MoviePage = () => {
-    const { id } = useParams(); // Get the movie ID from the URL
+    const { id } = useParams();
     const navigate = useNavigate();
     const [movie, setMovie] = useState(null);
     const [error, setError] = useState(null);
-    const [message, setMessage] = useState(""); // ✅ State for success/error messages
+    const [message, setMessage] = useState("");
 
     useEffect(() => {
         const fetchMovieDetails = async () => {
@@ -33,10 +34,8 @@ const MoviePage = () => {
         try {
             const response = await fetch("http://localhost:8000/save-movie", {
                 method: "POST",
-                credentials: "include", // ✅ Send cookies (authentication)
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     movie_name: movie.name,
                     movie_year: movie.year,
@@ -56,29 +55,38 @@ const MoviePage = () => {
         }
     };
 
-    if (error) {
-        return <p className="error-message">{error}</p>;
-    }
+    if (error) return <p className="error-message">{error}</p>;
 
     return (
-        <div className="movie-details-container">
+        <div className="movie-page-container">
             {movie ? (
                 <>
-                    <h1>{movie.name} ({movie.year})</h1>
-                    <img src={movie.poster} alt={movie.name} className="movie-poster" />
-                    <p>{movie.description}</p>
+                    <div className="movie-left">
+                        <img src={movie.poster} alt={movie.name} className="movie-poster" />
+                        <h1 className="movie-title">{movie.name} ({movie.year})</h1>
+                        <p className="movie-genres">🎭 {movie.genres?.join(", ") || "No genres available"}</p>
 
-                    {/* ✅ Save Movie Button */}
-                    <button onClick={handleSaveMovie} className="save-button">
-                        ⭐ Save Movie
-                    </button>
+                        <button onClick={handleSaveMovie} className="save-button">⭐ Save Movie</button>
+                        <button onClick={() => navigate(-1)} className="back-button">⬅️ Back to Home</button>
 
-                    {/* ✅ Display Success/Error Message */}
-                    {message && <p className="message">{message}</p>}
+                        {message && <p className="message">{message}</p>}
+                    </div>
 
-                    <button onClick={() => navigate(-1)} className="back-button">
-                        ⬅️ Back to Home
-                    </button>
+                    <div className="movie-right">
+                        {movie.trailer ? (
+                            <iframe
+                                className="movie-trailer"
+                                src={movie.trailer.replace("watch?v=", "embed/")}
+                                title="Movie Trailer"
+                                frameBorder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                            ></iframe>
+                        ) : (
+                            <p className="no-trailer">🎬 No trailer available</p>
+                        )}
+                        <p className="movie-description">{movie.description}</p>
+                    </div>
                 </>
             ) : (
                 <p>Loading movie details...</p>

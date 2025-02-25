@@ -1,26 +1,26 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Import navigation hook
+import "../components/TextStyles.css"; // ✅ Import text styling
 
 const Login = () => {
   const [userData, setUserData] = useState({ username: "", password: "" });
   const [message, setMessage] = useState("");
-  const navigate = useNavigate(); // Initialize navigation
+  const navigate = useNavigate();
 
-  // Handle input changes
   const handleChange = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage(""); // Clear previous messages
+    setMessage(""); 
 
     try {
       const response = await fetch("http://localhost:8000/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userData),
-        credentials: "include", // Send cookies
+        credentials: "include",
       });
 
       if (!response.ok) {
@@ -29,7 +29,7 @@ const Login = () => {
       }
 
       setMessage("Login successful!");
-      navigate("/home"); // Redirect immediately after login
+      navigate("/home");
     } catch (error) {
       setMessage(error.message);
     }
@@ -46,7 +46,7 @@ const Login = () => {
       }}
     >
       <div style={{ width: "300px", textAlign: "center" }}>
-        <h2>Login</h2>
+        <h2 className="text-stroke text-bold">Login</h2> {/* ✅ Styled Heading */}
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
           <input
             type="text"
@@ -96,8 +96,8 @@ const Login = () => {
             Login
           </button>
         </form>
-        {message && <p style={{ marginTop: "10px", color: message.includes("successful") ? "green" : "red" }}>{message}</p>}
-        <p style={{ marginTop: "10px" }}>
+        {message && <p className="text-stroke">{message}</p>} {/* ✅ Styled Message */}
+        <p className="text-stroke">
           Don't have an account? <a href="/register">Register here</a>
         </p>
       </div>

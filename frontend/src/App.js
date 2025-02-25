@@ -10,7 +10,7 @@ import "./App.css";
 
 function Navigation() {
   const location = useLocation();
-  const navigate = useNavigate(); // ✅ Moved useNavigate inside Navigation component
+  const navigate = useNavigate();
   const hideNav = location.pathname === "/" || location.pathname === "/register";
 
   const handleLogout = async () => {
@@ -19,7 +19,7 @@ function Navigation() {
         method: "POST",
         credentials: "include",
       });
-      navigate("/"); // ✅ Redirects to login after logout
+      navigate("/");
     } catch (error) {
       console.error("Logout error:", error);
     }
@@ -28,9 +28,19 @@ function Navigation() {
   return (
     !hideNav && (
       <nav className="top-navbar">
-        <Link to="/home" className="nav-button">🏠 Home</Link>
-        <Link to="/saved-movies" className="nav-button">⭐ Saved Movies</Link>
-        <button className="nav-button logout-button" onClick={handleLogout}>🚪 Logout</button>
+        {/* ✅ Entire Logo is Clickable */}
+        <Link to="/home" className="logo-container">
+          <div className="full-logo-click">
+            <img src="/MovieSeekLogo.png" alt="Movie Seek Logo" className="navbar-logo" />
+          </div>
+        </Link>
+
+        {/* ✅ Navigation Buttons (Centered) */}
+        <div className="nav-links">
+          <Link to="/home" className="nav-button">🏠 Home</Link>
+          <Link to="/saved-movies" className="nav-button">⭐ Saved Movies</Link>
+          <button className="nav-button logout-button" onClick={handleLogout}>🚪 Logout</button>
+        </div>
       </nav>
     )
   );
@@ -39,13 +49,11 @@ function Navigation() {
 function App() {
   return (
     <Router>
-      <Navigation /> {/* ✅ Moved inside Router to fix useNavigate issue */}
+      <Navigation />
       <Routes>
-        {/* ✅ Public Routes */}
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* ✅ Protected Routes */}
         <Route 
           path="/home"
           element={

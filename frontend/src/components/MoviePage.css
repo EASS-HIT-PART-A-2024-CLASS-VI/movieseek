@@ -1,0 +1,112 @@
+/* 📌 Main Layout */
+.movie-page-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 40px;
+    padding: 40px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* 🎭 Left Section: Poster, Title, Genres */
+.movie-left {
+    flex: 1;
+    text-align: center;
+}
+
+.movie-poster {
+    width: 300px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.movie-title {
+    font-size: 28px;
+    color: white;
+    margin-top: 15px;
+}
+
+.movie-genres {
+    font-size: 18px;
+    color: #ffcc00;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+/* 🎥 Right Section: Trailer & Description */
+.movie-right {
+    flex: 2;
+    text-align: center;
+}
+
+/* 🎬 Movie Trailer */
+.movie-trailer {
+    width: 100%;
+    max-width: 600px;
+    height: 350px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.no-trailer {
+    font-size: 18px;
+    color: red;
+}
+
+/* 📜 Movie Description */
+.movie-description {
+    font-size: 18px;
+    color: white;
+    text-align: left;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 10px;
+    line-height: 1.6;
+}
+
+/* ⭐ Save Button */
+.save-button {
+    background-color: #ffcc00;
+    color: black;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+.save-button:hover {
+    background-color: #ff9900;
+    transform: scale(1.05);
+}
+
+/* 🔄 Back Button */
+.back-button {
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+.back-button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+/* ✅ Success/Error Message */
+.message {
+    margin-top: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+}

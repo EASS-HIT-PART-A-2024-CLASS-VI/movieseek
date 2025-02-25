@@ -1,34 +1,75 @@
-
 services:
+  db:
+    image: mysql:8.0
+    container_name: mysql_container
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_LOG_CONSOLE=1  # ✅ Enable log control
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - app-network
+    command: mysqld --log-error-verbosity=1  # ✅ Reduce log verbosity
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      retries: 5
+      timeout: 5s
+
+  tmdb_service:
+    build: ./microservices/tmdb
+    image: my-tmdb-service:latest
+    container_name: tmdb_service_container
+    ports:
+      - "8001:8001"
+    environment:
+      - TMDB_API_KEY=${TMDB_API_KEY}
+    networks:
+      - app-network
+    depends_on:
+      db:
+        condition: service_healthy  # ✅ Ensures MySQL is fully ready before TMDB starts
+
   api:
     build: ./backend
     image: my-fastapi-app:latest
     container_name: fastapi_container
     ports:
       - "8000:8000"
-    depends_on:
-      db:
-        condition: service_healthy  # ✅ Waits for MySQL to be ready
-      tmdb_service: 
-        condition: service_started  # ✅ Ensures TMDB microservice starts first
     env_file:
-      - .env  # Path to the .env file in the 'backend' directory
+      - .env  # ✅ Load environment variables
     volumes:
       - ./backend:/app
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000
     networks:
       - app-network
+    depends_on:
+      db:
+        condition: service_healthy  # ✅ Ensures MySQL is fully ready before FastAPI starts
+      tmdb_service:
+        condition: service_started  # ✅ Ensures TMDB service starts before FastAPI
 
-  tmdb_service:
-    build: ./microservices/tmdb  # ✅ Updated to TMDB service
-    image: my-tmdb-service:latest
-    container_name: tmdb_service_container
+  frontend:
+    build:
+      context: ./frontend
+    image: my-react-app:latest
+    container_name: react_frontend
     ports:
-      - "8001:8001"
-    environment:
-      - TMDB_API_KEY=${TMDB_API_KEY}  # ✅ Correct environment variable
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app  # ✅ Mount local directory to container for live updates
+      - /app/node_modules  # ✅ Prevents conflicts between local and container dependencies
+    command: npm start
     networks:
       - app-network
+    depends_on:
+      api:
+        condition: service_started  # ✅ Ensures FastAPI is running before frontend starts
 
   pytest:
     build: ./backend
@@ -49,43 +90,8 @@ services:
     command: pytest
     networks:
       - app-network
-
-  db:
-    image: mysql:8.0
-    container_name: mysql_container
-    environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}  # ✅ Root password
-      - MYSQL_DATABASE=${DB_NAME}  # ✅ Creates database
-      - MYSQL_USER=${DB_USER}  # ✅ Creates a non-root user
-      - MYSQL_PASSWORD=${DB_PASSWORD}  # ✅ Password for the non-root user
-    ports:
-      - "3306:3306"
-    volumes:
-      - db_data:/var/lib/mysql
-    networks:
-      - app-network
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      retries: 5
-      timeout: 5s
-
-  frontend:
-    build:
-      context: ./frontend
-    image: my-react-app:latest
-    container_name: react_frontend
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./frontend:/app  # ✅ Mount local directory to container for live updates
-      - /app/node_modules  # ✅ Prevents conflicts between local and container dependencies
-    command: npm start
-    networks:
-      - app-network
-    depends_on:
-      api:
-        condition: service_started  # ✅ Ensures API is running before frontend starts
+    profiles:
+      - test  # ✅ Only runs if explicitly called
 
 volumes:
   db_data:

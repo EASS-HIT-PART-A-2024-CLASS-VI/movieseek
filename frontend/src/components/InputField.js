@@ -9,7 +9,13 @@ const InputField = ({ type, name, placeholder, value, onChange }) => {
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        style={{ width: "100%", padding: "8px", border: "1px solid #ccc", borderRadius: "4px" }}
+        style={{
+          width: "100%",
+          padding: "12px",
+          border: "2px solid #ccc",
+          borderRadius: "25px",
+          fontSize: "16px",
+        }}
       />
     </div>
   );

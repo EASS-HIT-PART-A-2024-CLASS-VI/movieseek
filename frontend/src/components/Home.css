@@ -10,6 +10,72 @@ body::before {
     z-index: -1;
 }
 
+/* 📌 Sticky Top Navigation Bar */
+.top-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #463f3a; /* ✅ Dark brown color */
+    padding: 10px 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+/* 🎬 Navigation Buttons */
+.nav-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    text-decoration: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.nav-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+}
+
+/* 🔴 Logout Button (Make it stand out) */
+.logout-button {
+    color: #ff4d4d;
+    font-weight: bold;
+    border: 1px solid #ff4d4d;
+    border-radius: 5px;
+    padding: 8px 15px;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.logout-button:hover {
+    background-color: #ff4d4d;
+    color: white;
+}
+
+/* Prevent content from getting hidden behind navbar */
+.container {
+    padding-top: 60px; /* ✅ Adjust for fixed navbar */
+}
+
+/* 🎯 Ensure search bar stays centered */
+.search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 30px 0;
+}
+
+/* 🔹 Remove extra logout button */
+.logout-container {
+    display: none; /* ✅ Hides extra logout button */
+}
+
 /* 🎬 Section Box for Trending & Top Rated Movies */
 .section-box {
     background: #f5f5f5; /* Light grey background */
@@ -81,28 +147,4 @@ body::before {
 .page-button.active {
     background-color: #007bff;
     color: white;
-}
-
-/* 🔹 Logout link styled as text */
-.logout-container {
-    text-align: right;
-    margin: 10px 20px;
-}
-
-.logout-link {
-    color: #007bff;
-    cursor: pointer;
-    font-size: 16px;
-    text-decoration: none;
-}
-
-.logout-link:hover {
-    text-decoration: underline;
-}
-
-/* 🔹 Center the search bar */
-.search-container {
-    display: flex;
-    justify-content: center;
-    margin: 30px 0;
 }

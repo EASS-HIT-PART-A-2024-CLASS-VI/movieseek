@@ -10,7 +10,6 @@ const Home = () => {
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
-    // Fetch authenticated user data
     useEffect(() => {
         const fetchUser = async () => {
             try {
@@ -31,29 +30,10 @@ const Home = () => {
         fetchUser();
     }, [navigate]);
 
-    // Logout function
-    const handleLogout = async () => {
-        try {
-            await fetch("http://localhost:8000/logout", {
-                method: "POST",
-                credentials: "include",
-            });
-
-            navigate("/");
-        } catch (error) {
-            console.error("Logout error:", error);
-        }
-    };
-
     return (
         <div className="container">
-            {/* Logout link (styled as text) */}
-            <div className="logout-container">
-                <span className="logout-link" onClick={handleLogout}>
-                    Logout
-                </span>
-            </div>
-
+            {/* ✅ Removed extra logout button */}
+            
             {/* Centered Movie Search Bar */}
             <div className="search-container">
                 <MovieSearch setMovieData={setMovieData} setError={setError} />

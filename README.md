@@ -79,6 +79,7 @@ Before running the project, you need to set up the required **environment variab
 cp .env.example .env
 
 2️⃣ Configure the following variables in .env:
+
 ```
 # TMDB API Key for the microservice
 API_KEY=your_actual_tmdb_api_key
@@ -101,7 +102,8 @@ cd movieseek
 ```
 2️⃣ Start the Application (Docker Setup) 🐳
 Ensure Docker and Docker Compose are installed on your machine.
-```docker-compose up --build
+```
+docker-compose up --build
 ```
 
 This will start the following Docker containers:

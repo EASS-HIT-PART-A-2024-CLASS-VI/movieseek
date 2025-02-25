@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException 
 from tmdb_service import fetch_movie_by_title, fetch_trending_movies, fetch_top_rated_movies
 
 app = FastAPI()
@@ -7,6 +7,7 @@ app = FastAPI()
 async def search_movie(title: str):
     """
     Fetch movie details from the TMDB API via the microservice.
+    Now includes genres and trailer.
     """
     result = fetch_movie_by_title(title)
     if "error" in result:

@@ -1,0 +1,21 @@
+/* 🎨 Universal Text Styling - White Text with Black Borders */
+.text-stroke {
+    color: white;
+    text-shadow: 
+        -1px -1px 0 black,  
+        1px -1px 0 black,
+        -1px 1px 0 black,
+        1px 1px 0 black; /* ✅ Creates a black border around the text */
+}
+
+.text-bold {
+    font-weight: bold;
+}
+
+.text-large {
+    font-size: 20px;
+}
+
+.text-center {
+    text-align: center;
+}

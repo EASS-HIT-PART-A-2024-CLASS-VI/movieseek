@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import MovieCard from "../components/MovieCard"; // ✅ Reusable MovieCard component
 import "../components/Home.css"; // ✅ Consistent styling
+import "../components/TextStyles.css"; // ✅ Import the text styling component
 
 const SavedMovies = () => {
     const [savedMovies, setSavedMovies] = useState([]);
@@ -52,7 +53,10 @@ const SavedMovies = () => {
 
     return (
         <div className="container">
-            <h2>🎞️ Your Saved Movies</h2>
+            {/* ✅ Centered & Styled Heading */}
+            <h2 className="text-stroke text-bold text-large saved-movies-title">
+                🎞️ Your Saved Movies
+            </h2>
 
             {error && <p className="error-message">{error}</p>}
             {message && <p className="message">{message}</p>}

@@ -31,22 +31,39 @@ def fetch_movie_by_title(title):
 
 def fetch_movie_details(movie_id):
     """
-    Fetch detailed movie data from TMDB API using movie ID.
+    Fetch detailed movie data from TMDB API using movie ID, including genres and trailer.
     """
     details_url = f"{BASE_URL}/movie/{movie_id}"
+    videos_url = f"{BASE_URL}/movie/{movie_id}/videos"
     params = {"api_key": API_KEY}
 
-    response = requests.get(details_url, params=params)
-    if response.status_code == 200:
-        data = response.json()
-        return {
-            "name": data.get("title"),
-            "year": data.get("release_date", "")[:4],
-            "description": data.get("overview"),
-            "poster": IMAGE_BASE_URL + data["poster_path"] if data.get("poster_path") else None
-        }
-    else:
-        return {"error": f"Failed to fetch movie details. Status code: {response.status_code}"}
+    # Fetch movie details
+    details_response = requests.get(details_url, params=params)
+    if details_response.status_code != 200:
+        return {"error": f"Failed to fetch movie details. Status code: {details_response.status_code}"}
+
+    details_data = details_response.json()
+
+    # Fetch movie trailers
+    videos_response = requests.get(videos_url, params=params)
+    trailer_key = None  # Default to None if no trailer is found
+
+    if videos_response.status_code == 200:
+        videos_data = videos_response.json()
+        for video in videos_data.get("results", []):
+            if video["type"] == "Trailer" and video["site"] == "YouTube":
+                trailer_key = video["key"]  # YouTube video key
+                break  # Stop at the first valid trailer
+
+    return {
+        "name": details_data.get("title"),
+        "year": details_data.get("release_date", "")[:4],
+        "description": details_data.get("overview"),
+        "poster": IMAGE_BASE_URL + details_data["poster_path"] if details_data.get("poster_path") else None,
+        "genres": [genre["name"] for genre in details_data.get("genres", [])],  # Extract genre names
+        "trailer": f"https://www.youtube.com/watch?v={trailer_key}" if trailer_key else None,  # YouTube trailer link
+    }
+
 
 def fetch_trending_movies():
     """

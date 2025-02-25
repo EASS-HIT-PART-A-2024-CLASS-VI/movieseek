@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "../components/TextStyles.css"; // ✅ Import text styling
 
 const Register = () => {
   const [userData, setUserData] = useState({ username: "", password: "" });
@@ -25,7 +26,7 @@ const Register = () => {
 
       setMessage("Registration successful! Redirecting to login...");
       setTimeout(() => {
-        window.location.href = "/"; // Redirect to login page
+        window.location.href = "/";
       }, 2000);
     } catch (error) {
       setMessage(error.message);
@@ -38,7 +39,7 @@ const Register = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        height: "100vh", // Full viewport height for centering
+        height: "100vh",
         flexDirection: "column",
       }}
     >
@@ -48,7 +49,7 @@ const Register = () => {
           textAlign: "center",
         }}
       >
-        <h2>Register</h2>
+        <h2 className="text-stroke text-bold">Register</h2> {/* ✅ Styled Heading */}
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
           <input
             type="text"
@@ -85,7 +86,7 @@ const Register = () => {
             style={{
               width: "100%",
               padding: "10px",
-              backgroundColor: "#28a745", // Green color for register button
+              backgroundColor: "#28a745",
               color: "white",
               border: "none",
               borderRadius: "5px",
@@ -96,8 +97,8 @@ const Register = () => {
             Register
           </button>
         </form>
-        {message && <p style={{ marginTop: "10px", color: message.includes("successful") ? "green" : "red" }}>{message}</p>}
-        <p style={{ marginTop: "10px" }}>
+        {message && <p className="text-stroke">{message}</p>} {/* ✅ Styled Message */}
+        <p className="text-stroke">
           Already have an account? <a href="/">Login here</a>
         </p>
       </div>

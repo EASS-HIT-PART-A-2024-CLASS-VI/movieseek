@@ -82,12 +82,23 @@ def get_registered_users(db: Session = Depends(get_db)):
 def get_movie(title: str):
     """
     ✅ Fetch movie details from the TMDB Microservice.
+    Includes genres and trailer.
     """
     response = requests.get(TMDB_SEARCH_URL, params={"title": title})
 
     if response.status_code == 200:
-        return response.json()
+        movie_data = response.json()
+        return {
+            "name": movie_data.get("name"),
+            "year": movie_data.get("year"),
+            "description": movie_data.get("description"),
+            "poster": movie_data.get("poster"),
+            "genres": movie_data.get("genres", []),  # ✅ Include genres
+            "trailer": movie_data.get("trailer")  # ✅ Include trailer
+        }
+
     raise HTTPException(status_code=response.status_code, detail="Error fetching movie details")
+
 
 @app.get("/trending-movies")
 def get_trending_movies():

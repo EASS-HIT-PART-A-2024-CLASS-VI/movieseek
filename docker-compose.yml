@@ -63,7 +63,6 @@ services:
       - "3000:3000"
     volumes:
       - ./frontend:/app  # ✅ Mount local directory to container for live updates
-      - /app/node_modules  # ✅ Prevents conflicts between local and container dependencies
     command: npm start
     networks:
       - app-network

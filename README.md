@@ -25,7 +25,7 @@ MovieSeek is built using a **modern, scalable** technology stack:
 ### **Backend** 🚀
 
 🔹 **[FastAPI](https://fastapi.tiangolo.com/)** - High-performance Python framework for APIs.  
-🔹 **MySQL (Dockerized)** - Uses the **official MySQL container from Docker Hub** for user authentication and saved movies.  
+🔹 **MySQL** - Uses the **official MySQL container from Docker Hub** for user authentication and saved movies.  
 🔹 **TMDB API Microservice** - A separate **FastAPI-based microservice** that fetches movie data, genres, and trailers from **[TMDB](https://www.themoviedb.org/)**.  
 🔹 **JWT Authentication** - Secure authentication and session management using JSON Web Tokens.  
 
@@ -70,70 +70,84 @@ movieseek
 ```
 ---
 
-## **Environment Setup 🌱**
+## **How to Set Up and Run the Project 🏃‍♂️**
+### **1️⃣ Clone the Repository**
+```bash
+git clone https://github.com/yourusername/movieseek.git
+cd movieseek
+```
+### **2️⃣ Get a TMDB API Key 🔑**
+To fetch movie data, you need an API key from **[TMDB (The Movie Database)](https://www.themoviedb.org/)**.
 
-Before running the project, you need to set up the required **environment variables**.
+Steps to Get Your API Key:
+1. Go to **[TMDB API Request Page](https://developer.themoviedb.org/docs/getting-started)**
+2. Sign up for a free account if you don’t have one.
+3. Navigate to API Keys under your account settings.
+4. Click Request an API Key and follow the instructions.
+5. Copy your API key once it’s generated.
 
-### **1️⃣ Create an `.env` file**  
+You will need this API key when setting up your .env file.
+
+### **3️⃣ Set Up Environment Variables** 🌱
+MovieSeek requires an .env file for storing sensitive configuration details.
+
+### Create an .env file
 ```bash
 cp .env.example .env
-
-2️⃣ Configure the following variables in .env:
-
 ```
+Then, open the .env file and configure the following variables:
+```bash
 # TMDB API Key for the microservice
-API_KEY=your_actual_tmdb_api_key
+TMDB_API_KEY=your_actual_tmdb_api_key
 
 # MySQL Database Configuration
-DB_HOST=your_database_host
+DB_HOST=db
 DB_NAME=your_database_name
 DB_USER=your_database_user
 DB_PASSWORD=your_database_password
 MYSQL_ROOT_PASSWORD=your_root_password
 ```
-3️⃣ Save the file. Your project will now use these variables at runtime.
+🔹 Replace your_actual_tmdb_api_key with your TMDB API key.
+🔹 Ensure the database credentials match those in docker-compose.yml.
 
-How to Run the Project 🏃‍♂️
-Follow these steps to clone, set up, and run MovieSeek on your local machine.
-1️⃣ Clone the Repository
-```
-git clone https://github.com/yourusername/movieseek.git
-cd movieseek
-```
-2️⃣ Start the Application (Docker Setup) 🐳
+Save and close the file.
+
+## **4️⃣ Start the Application (Docker Setup)** 🐳
 Ensure Docker and Docker Compose are installed on your machine.
-```
+
+Run:
+```bash
 docker-compose up --build
 ```
-
 This will start the following Docker containers:
+- Backend (FastAPI)
+- Frontend (React)
+- TMDB Microservice (FastAPI)
+- MySQL Database (Pulled from Docker Hub)
 
-Backend (FastAPI)
-Frontend (React)
-TMDB Microservice (FastAPI)
-MySQL Database (Pulled from Docker Hub)
-3️⃣ Access the App
+## **5️⃣ Access the Application**
 📌 Frontend: http://localhost:3000
 📌 Backend API: http://localhost:8000/docs (Swagger API documentation for testing endpoints.)
 📌 TMDB Microservice: http://localhost:8001/docs (Swagger API docs for the microservice.)
 
-How the Microservice Works 🛰️
-The backend does not directly communicate with TMDB. Instead, it interacts with a FastAPI microservice that:
+## **How the TMDB Microservice Works** 🛰️
+The backend does not directly communicate with TMDB. Instead, it interacts with a FastAPI microservice, which:
 
-Receives requests from the backend for movie data.
-Fetches data from TMDB API including movie details, genres, and trailers.
-Returns the formatted data to the backend, which then sends it to the frontend.
-This approach ensures:
+✔️ Receives requests from the backend for movie data.
+✔️ Fetches data from TMDB API, including movie details, genres, and trailers.
+✔️ Returns the formatted data to the backend, which then sends it to the frontend.
 
-Better modularity (Backend is independent of TMDB API changes).
-Improved security (TMDB API key is stored only in the microservice).
-Scalability (The microservice can be extended for more features).
+### **Why Use a Microservice?**
+✅ Better Modularity - The backend is independent of TMDB API changes.
+✅ Improved Security - TMDB API key is stored only in the microservice.
+✅ Scalability - The microservice can be extended with more features in the future
 
-Contributing 🤝
-We welcome contributions! If you'd like to improve MovieSeek, follow these steps:
+## **Contact 📩**
+For any questions, feel free to **open an issue**, reach out via **GitHub Discussions** or **email** vrabski@gmail.com.
 
-1️⃣ Fork the repository
-2️⃣ Create a feature branch
-3️⃣ Make your changes & submit a pull request
 
+## **Credits & Legal Notice** 🎭
+
+This product uses the **TMDB API**.  
+For more information, visit **[TMDB](https://www.themoviedb.org/)**.
 

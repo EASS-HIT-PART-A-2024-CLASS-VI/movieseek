@@ -130,6 +130,9 @@ This will start the following Docker containers:
 📌 Backend API: http://localhost:8000/docs (Swagger API documentation for testing endpoints.)
 📌 TMDB Microservice: http://localhost:8001/docs (Swagger API docs for the microservice.)
 
+## **Demo Video**
+Watch **[MovieSeek demo video](https://youtu.be/tVGkJzm23VA)**
+
 ## **How the TMDB Microservice Works** 🛰️
 The backend does not directly communicate with TMDB. Instead, it interacts with a FastAPI microservice, which:
 
@@ -144,7 +147,6 @@ The backend does not directly communicate with TMDB. Instead, it interacts with 
 
 ## **Contact 📩**
 For any questions, feel free to **open an issue**, reach out via **GitHub Discussions** or **email** vrabski@gmail.com.
-
 
 ## **Credits & Legal Notice** 🎭
 

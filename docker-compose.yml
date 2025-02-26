@@ -61,14 +61,12 @@ services:
     container_name: react_frontend
     ports:
       - "3000:3000"
-    volumes:
-      - ./frontend:/app  # ✅ Mount local directory to container for live updates
-    command: npm start
     networks:
       - app-network
     depends_on:
       api:
         condition: service_started  # ✅ Ensures FastAPI is running before frontend starts
+
 
   pytest:
     build: ./backend

@@ -10,11 +10,17 @@ COPY package.json package-lock.json ./
 # Install dependencies
 RUN npm install
 
-# Copy the rest of the app files
+# Copy the rest of the application files
 COPY . .
+
+# Build the React application
+RUN npm run build
+
+# Serve the built app using a lightweight server
+RUN npm install -g serve  # ✅ Install serve to serve the static files
 
 # Expose the port React runs on
 EXPOSE 3000
 
-# Start the React development server
-CMD ["npm", "start"]
+# Serve the build directory
+CMD ["serve", "-s", "build", "-l", "3000"]

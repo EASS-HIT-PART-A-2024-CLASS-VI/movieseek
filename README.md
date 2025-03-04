@@ -73,7 +73,7 @@ movieseek
 ## **How to Set Up and Run the Project 🏃‍♂️**
 ### **1️⃣ Clone the Repository**
 ```bash
-git clone [https://github.com/yourusername/movieseek.git](https://github.com/EASS-HIT-PART-A-2024-CLASS-VI/movieseek.git)
+git clone https://github.com/EASS-HIT-PART-A-2024-CLASS-VI/movieseek.git
 cd movieseek
 ```
 ### **2️⃣ Get a TMDB API Key 🔑**
